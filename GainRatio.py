@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from InfoXT import oblicz_info
 from Gain import oblicz_przyrost_informacji
 
 
@@ -19,11 +18,9 @@ def oblicz_zrownowazony_przyrost(df, kolumna):
 
 
 if __name__ == "__main__":
-    # Wczytanie danych
     plik_kategorii = "gielda.txt"
     df_kategorie = pd.read_csv(plik_kategorii, sep=",", header=None)
 
-    # Obliczenie zrównoważonego przyrostu informacji dla każdej kolumny (bez ostatniej decyzyjnej)
     for col in df_kategorie.columns[:-1]:
         gain_ratio = oblicz_zrownowazony_przyrost(df_kategorie, col)
         print(f"Zrównoważony przyrost informacji dla atrybutu {col}: {gain_ratio}")

@@ -17,11 +17,9 @@ def oblicz_przyrost_informacji(df, kolumna):
 
 
 if __name__ == "__main__":
-    # Wczytanie danych
     plik_kategorii = "gielda.txt"
     df_kategorie = pd.read_csv(plik_kategorii, sep=",", header=None)
 
-    # Obliczenie przyrostu informacji dla każdej kolumny (bez ostatniej decyzyjnej)
     for col in df_kategorie.columns[:-1]:
         gain = oblicz_przyrost_informacji(df_kategorie, col)
         print(f"Przyrost informacji dla atrybutu {col}: {gain}")
