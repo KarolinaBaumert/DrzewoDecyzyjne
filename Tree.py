@@ -62,10 +62,12 @@ class TreeNode:
 
 def build_decision_tree(conditional_attribute, last_column, column_index=None):
     node = TreeNode()  # Utwórz nowy węzeł
-    if len(np.unique(last_column)) > 1 and (column_index is None or len(column_index) > 0):  # Sprawdź warunek stopu
-        if column_index is None:  # Jeśli brak ograniczeń, użyj wszystkich cech
+    if len(np.unique(last_column)) > 1 and (column_index is None or len(column_index) > 0):
+        # Jeżeli ostatnia kolumna ma więcej niż 1 unikalną wartość, nie przekroczono limitu atrybutów oraz ostatnia
+        # kolumna nie jest jednorodna
+        if column_index is None:  # Jeśli nie określono kolumn to użyj wszystkich do analizy
             column_index = list(range(conditional_attribute.shape[1]))
-        best_feature_index = select_best_attribute(conditional_attribute.iloc[:, column_index], last_column)  # Wybierz najlepszy atrybut
+        best_feature_index = select_best_attribute(conditional_attribute.iloc[:, column_index], last_column)  # Wybierz najlepszy atrybut, najwyższe gain ratio
         best_feature = column_index[best_feature_index]  # Pobierz indeks najlepszego atrybutu
         node.feature_index = best_feature  # Ustaw atrybut w węźle
         feature_values = np.unique(conditional_attribute.iloc[:, best_feature])  # Pobierz unikalne wartości atrybutu
@@ -76,7 +78,7 @@ def build_decision_tree(conditional_attribute, last_column, column_index=None):
             child_node = build_decision_tree(sub_X, sub_y, new_feature_indices)  # Rekurencyjnie buduj drzewo
             node.children[value] = child_node  # Dodaj dziecko do węzła
     else:
-        node.label = last_column.mode()[0]  # Jeśli warunek stopu, ustaw etykietę węzła
+        node.label = last_column.mode()[0]  # Nie mozna dalej podzielić danych
     return node  # Zwróć węzeł
 
 def save_tree_to_dot(node, filename):
@@ -97,7 +99,7 @@ def save_tree_to_dot(node, filename):
     dot.save(filename)
 
 if __name__ == "__main__":
-    file_path = 'car.data'
+    file_path = 'gielda.txt'
     conditional_attribute, last_column = load_data(file_path)
     entropy = calculate_entropy(last_column)
     print(f"Info(T): {entropy}")
